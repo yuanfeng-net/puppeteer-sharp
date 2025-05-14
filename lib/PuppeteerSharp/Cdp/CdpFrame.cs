@@ -82,7 +82,7 @@ public class CdpFrame : Frame
         var referrerPolicy = string.IsNullOrEmpty(options.ReferrerPolicy)
             ? FrameManager.NetworkManager.ExtraHTTPHeaders?.GetValue("referer-policy")
             : options.ReferrerPolicy;
-        var timeout = options.Timeout ?? FrameManager.TimeoutSettings.NavigationTimeout;
+        var timeout = options.Timeout ?? Page.DefaultNavigationTimeout;
 
         using var watcher = new LifecycleWatcher(FrameManager.NetworkManager, this, options.WaitUntil, timeout);
         try
@@ -131,7 +131,7 @@ public class CdpFrame : Frame
     /// <inheritdoc/>
     public override async Task<IResponse> WaitForNavigationAsync(NavigationOptions options = null)
     {
-        var timeout = options?.Timeout ?? FrameManager.TimeoutSettings.NavigationTimeout;
+        var timeout = options?.Timeout ?? Page.DefaultNavigationTimeout;
         using var watcher = new LifecycleWatcher(FrameManager.NetworkManager, this, options?.WaitUntil, timeout);
         var raceTask = await Task.WhenAny(
         [
@@ -151,7 +151,7 @@ public class CdpFrame : Frame
     public override async Task SetContentAsync(string html, NavigationOptions options = null)
     {
         var waitUntil = options?.WaitUntil ?? new[] { WaitUntilNavigation.Load };
-        var timeout = options?.Timeout ?? FrameManager.TimeoutSettings.NavigationTimeout;
+        var timeout = options?.Timeout ?? Page.DefaultNavigationTimeout;
 
         // We rely upon the fact that document.open() will reset frame lifecycle with "init"
         // lifecycle event. @see https://crrev.com/608658

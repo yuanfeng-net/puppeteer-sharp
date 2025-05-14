@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -177,7 +178,7 @@ namespace PuppeteerSharp
         {
             if (_detached)
             {
-                throw new PuppeteerException($"Execution Context is not available in detached frame \"{Frame.Url}\" (are you trying to evaluate?)");
+                return null;
             }
 
             return _contextResolveTaskWrapper.Task;
@@ -185,43 +186,113 @@ namespace PuppeteerSharp
 
         internal override async Task<IJSHandle> EvaluateExpressionHandleAsync(string script)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
             return await context.EvaluateExpressionHandleAsync(script).ConfigureAwait(false);
         }
 
         internal override async Task<IJSHandle> EvaluateFunctionHandleAsync(string script, params object[] args)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
             return await context.EvaluateFunctionHandleAsync(script, args).ConfigureAwait(false);
         }
 
         internal override async Task<T> EvaluateExpressionAsync<T>(string script)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
             return await context.EvaluateExpressionAsync<T>(script).ConfigureAwait(false);
         }
 
         internal override async Task<JsonElement?> EvaluateExpressionAsync(string script)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
             return await context.EvaluateExpressionAsync(script).ConfigureAwait(false);
         }
 
         internal override async Task<T> EvaluateFunctionAsync<T>(string script, params object[] args)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
+
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
             return await context.EvaluateFunctionAsync<T>(script, args).ConfigureAwait(false);
         }
 
         internal override async Task<JsonElement?> EvaluateFunctionAsync(string script, params object[] args)
         {
+            if (_detached)
+            {
+                return default;
+            }
+
             var context = await GetExecutionContextAsync().ConfigureAwait(false);
-            return await context.EvaluateFunctionAsync(script, args).ConfigureAwait(false);
+
+            if (context?.Client?.Connection?.IsClosed != false || context?.World?.Frame?.Detached != false)
+            {
+                return default;
+            }
+
+            try
+            {
+                return await context.EvaluateFunctionAsync(script, args).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return default;
+            }
         }
 
         internal void ClearContext()
         {
-            _contextResolveTaskWrapper.TrySetException(new PuppeteerException("Execution Context was destroyed"));
+            _contextResolveTaskWrapper.TrySetResult(null);
             _contextResolveTaskWrapper = new TaskCompletionSource<ExecutionContext>(TaskCreationOptions.RunContinuationsAsynchronously);
             _context?.Dispose();
             _context = null;

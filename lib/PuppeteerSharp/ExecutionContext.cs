@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json;
@@ -205,8 +206,8 @@ namespace PuppeteerSharp
 
                 if (response.ExceptionDetails != null)
                 {
-                    throw new EvaluationFailedException("Evaluation failed: " +
-                        GetExceptionMessage(response.ExceptionDetails));
+                    Debug.WriteLine(GetExceptionMessage(response.ExceptionDetails));
+                    return default;
                 }
 
                 return response.Result;
@@ -219,7 +220,8 @@ namespace PuppeteerSharp
                     return default;
                 }
 
-                throw new EvaluationFailedException(ex.Message, ex);
+                Debug.WriteLine(ex.Message);
+                return default;
             }
         }
 

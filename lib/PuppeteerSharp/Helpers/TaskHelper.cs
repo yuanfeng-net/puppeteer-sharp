@@ -15,7 +15,7 @@ namespace PuppeteerSharp.Helpers
         /// <summary>
         /// Default timeout.
         /// </summary>
-        public static int DefaultTimeout { get; set; } = 1_000;
+        public static int DefaultTimeout { get; set; } = 3_000;
 
         // Recipe from https://blogs.msdn.microsoft.com/pfxteam/2012/10/05/how-do-i-cancel-non-cancelable-async-operations/
 

@@ -72,6 +72,11 @@ public class CdpPage : Page
 
         _emulationManager = new EmulationManager(client);
         _logger = Client.Connection.LoggerFactory.CreateLogger<Page>();
+
+        DefaultNavigationTimeout = Browser.DefaultWaitForTimeout;
+
+        DefaultTimeout = Browser.DefaultWaitForTimeout;
+
         FrameManager = new FrameManager(client, this, acceptInsecureCerts, TimeoutSettings);
         Accessibility = new Accessibility(client);
 
@@ -1027,7 +1032,7 @@ public class CdpPage : Page
                     await OnBindingCalledAsync(e.MessageData.ToObject<BindingCalledResponse>())
                         .ConfigureAwait(false);
                     break;
-                case "Page.fileChooserOpened":
+                case "Page.fileChooserOpened2":
                     await OnFileChooserAsync(e.MessageData.ToObject<PageFileChooserOpenedResponse>())
                         .ConfigureAwait(false);
                     break;

@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -75,11 +76,13 @@ public class CdpCDPSession : CDPSession
     {
         if (Connection == null)
         {
-            throw new TargetClosedException(
+            Debug.WriteLine(
                 $"Protocol error ({method}): Session closed. " +
                 $"Most likely the {_targetType} has been closed." +
                 $"Close reason: {CloseReason}",
                 CloseReason);
+
+            return default;
         }
 
         var id = GetMessageId();
@@ -106,7 +109,8 @@ public class CdpCDPSession : CDPSession
         {
             if (waitForCallback && _callbacks.TryRemove(id, out _))
             {
-                callback.TaskWrapper.TrySetException(new MessageException(ex.Message, ex));
+                Debug.WriteLine("SendAsync Error" + ex.StackTrace);
+                callback.TaskWrapper.TrySetResult(null);
             }
         }
 

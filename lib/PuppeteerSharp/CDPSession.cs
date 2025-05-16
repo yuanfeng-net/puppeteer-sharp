@@ -46,7 +46,12 @@ namespace PuppeteerSharp
         public async Task<T> SendAsync<T>(string method, object args = null, CommandOptions options = null)
         {
             var content = await SendAsync(method, args, true, options).ConfigureAwait(false);
-            Debug.Assert(content != null, nameof(content) + " != null");
+
+            if (content == null)
+            {
+                return default;
+            }
+
             return content.Value.ToObject<T>();
         }
 

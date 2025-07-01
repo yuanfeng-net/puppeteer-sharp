@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0</TargetFrameworks>
     <Authors>Darío Kondratiuk</Authors>
     <Owners>Darío Kondratiuk</Owners>
     <PackageProjectUrl>https://github.com/hardkoded/puppeteer-sharp</PackageProjectUrl>
@@ -12,10 +12,10 @@
     <Description>Headless Browser .NET API</Description>
     <PackageId>SJPuppeteerSharp</PackageId>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageVersion>20.1.8</PackageVersion>
-    <ReleaseVersion>20.1.8</ReleaseVersion>
-    <AssemblyVersion>20.1.8</AssemblyVersion>
-    <FileVersion>20.1.8</FileVersion>
+    <PackageVersion>20.1.9</PackageVersion>
+    <ReleaseVersion>20.1.9</ReleaseVersion>
+    <AssemblyVersion>20.1.9</AssemblyVersion>
+    <FileVersion>20.1.9</FileVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
     <DebugType>embedded</DebugType>

@@ -21,6 +21,13 @@ public class CdpHttpResponse : Response<CdpHttpRequest>
         ResponsePayload responseMessage,
         ResponseReceivedExtraInfoResponse extraInfo)
     {
+        if (client == null)
+        {
+            Status = System.Net.HttpStatusCode.RequestTimeout;
+            StatusText = "Time out to found";
+            return;
+        }
+
         _client = client;
         Request = request;
         Status = extraInfo != null ? extraInfo.StatusCode : responseMessage.Status;
@@ -51,6 +58,15 @@ public class CdpHttpResponse : Response<CdpHttpRequest>
     public override bool FromCache => _fromDiskCache || (Request?.FromMemoryCache ?? false);
 
     internal TaskCompletionSource<bool> BodyLoadedTaskWrapper { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    /// <summary>
+    /// Creates a time out Response <see cref="CdpHttpResponse"/> instance.
+    /// </summary>
+    /// <returns>return default response body.</returns>
+    public static CdpHttpResponse GetTimeOutErrorResponse()
+    {
+        return new CdpHttpResponse(null, null, null, null);
+    }
 
     /// <summary>
     /// Returns a Task which resolves to a buffer with response body.

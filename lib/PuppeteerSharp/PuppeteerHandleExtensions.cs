@@ -162,7 +162,7 @@ namespace PuppeteerSharp
                 })();
             }").ConfigureAwait(false);
 
-            await foreach (var item in iterator.TransposeIteratorHandleAsync())
+            await foreach (var item in iterator.TransposeIteratorHandleAsync().ConfigureAwait(false))
             {
                 yield return item;
             }

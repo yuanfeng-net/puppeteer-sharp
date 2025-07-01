@@ -611,9 +611,10 @@ public class CdpPage : Page
                     FrameManager.NetworkManager.Response -= ResponseEventListener;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                responseTcs.TrySetException(new PuppeteerException("Predicated failed", ex));
+                // responseTcs.TrySetException(new PuppeteerException("Predicated failed", ex));
+                responseTcs.TrySetResult(CdpHttpResponse.GetTimeOutErrorResponse());
             }
         }
 

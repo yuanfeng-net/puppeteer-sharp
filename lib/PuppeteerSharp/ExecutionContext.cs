@@ -125,9 +125,16 @@ namespace PuppeteerSharp
         }
 
         internal IJSHandle CreateJSHandle(RemoteObject remoteObject)
-            => remoteObject.Subtype == RemoteObjectSubtype.Node && Frame != null
+        {
+            if (remoteObject == null)
+            {
+                return default;
+            }
+
+            return remoteObject.Subtype == RemoteObjectSubtype.Node && Frame != null
                 ? new CdpElementHandle(World, remoteObject)
                 : new CdpJSHandle(World, remoteObject);
+        }
 
         private static string GetExceptionMessage(EvaluateExceptionResponseDetails exceptionDetails)
         {

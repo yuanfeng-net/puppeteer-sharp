@@ -15,10 +15,27 @@ namespace PuppeteerSharp
     /// <inheritdoc cref="IExecutionContext"/>
     public sealed class ExecutionContext : IExecutionContext, IDisposable, IAsyncDisposable
     {
-        internal const string EvaluationScriptUrl = "__puppeteer_evaluation_script__";
-        private const string EvaluationScriptSuffix = $"//# sourceURL={EvaluationScriptUrl}";
-
         private static readonly Regex _sourceUrlRegex = new(@"^[\040\t]*\/\/[@#] sourceURL=\s*\S*?\s*$", RegexOptions.Multiline);
+
+        private static string _evaluationScriptUrl;
+
+        internal static string EvaluationScriptUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_evaluationScriptUrl))
+                {
+                    _evaluationScriptUrl = Guid.NewGuid().ToString();
+                }
+
+                return _evaluationScriptUrl;
+            }
+        }
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
+        private readonly string _evaluationScriptSuffix = $"//# sourceURL={EvaluationScriptUrl}";
+#pragma warning restore SA1201 // Elements should appear in the correct order
+
         private readonly TaskQueue _puppeteerUtilQueue = new();
         private IJSHandle _puppeteerUtil;
 
@@ -187,7 +204,7 @@ namespace PuppeteerSharp
         private Task<RemoteObject> EvaluateExpressionInternalAsync(bool returnByValue, string script)
             => ExecuteEvaluationAsync("Runtime.evaluate", new Dictionary<string, object>
             {
-                ["expression"] = _sourceUrlRegex.IsMatch(script) ? script : $"{script}\n{EvaluationScriptSuffix}",
+                ["expression"] = _sourceUrlRegex.IsMatch(script) ? script : $"{script}\n{_evaluationScriptSuffix}",
                 ["contextId"] = ContextId,
                 ["returnByValue"] = returnByValue,
                 ["awaitPromise"] = true,
@@ -197,7 +214,7 @@ namespace PuppeteerSharp
         private async Task<RemoteObject> EvaluateFunctionInternalAsync(bool returnByValue, string script, params object[] args)
             => await ExecuteEvaluationAsync("Runtime.callFunctionOn", new RuntimeCallFunctionOnRequest
             {
-                FunctionDeclaration = $"{script}\n{EvaluationScriptSuffix}\n",
+                FunctionDeclaration = $"{script}\n{_evaluationScriptSuffix}\n",
                 ExecutionContextId = ContextId,
                 Arguments = await Task.WhenAll(args.Select(FormatArgumentAsync).ToArray()).ConfigureAwait(false),
                 ReturnByValue = returnByValue,

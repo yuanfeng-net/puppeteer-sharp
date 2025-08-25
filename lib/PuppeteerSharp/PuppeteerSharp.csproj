@@ -12,10 +12,10 @@
     <Description>Headless Browser .NET API</Description>
     <PackageId>SJPuppeteerSharp</PackageId>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageVersion>20.1.9</PackageVersion>
-    <ReleaseVersion>20.1.9</ReleaseVersion>
-    <AssemblyVersion>20.1.9</AssemblyVersion>
-    <FileVersion>20.1.9</FileVersion>
+    <PackageVersion>20.2.2</PackageVersion>
+    <ReleaseVersion>20.2.2</ReleaseVersion>
+    <AssemblyVersion>20.2.2</AssemblyVersion>
+    <FileVersion>20.2.2</FileVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
     <DebugType>embedded</DebugType>
@@ -26,6 +26,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>12</LangVersion>
     <AnalysisLevel>8.0-Recommended</AnalysisLevel>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <Import Project="../Common/CommonProps.props" />
   <ItemGroup>

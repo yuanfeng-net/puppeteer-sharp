@@ -14,7 +14,6 @@ namespace PuppeteerSharp.Cdp
     internal class FrameManager : IDisposable, IAsyncDisposable, IFrameProvider
     {
         private const int TimeForWaitingForSwap = 200;
-        private const string UtilityWorldName = "__puppeteer_utility_world__";
 
         private readonly ConcurrentDictionary<string, ExecutionContext> _contextIdToContext = new();
         private readonly ILogger _logger;
@@ -24,8 +23,19 @@ namespace PuppeteerSharp.Cdp
         private readonly ConcurrentDictionary<CDPSession, DeviceRequestPromptManager> _deviceRequestPromptManagerMap = new();
         private TaskCompletionSource<bool> _frameTreeHandled = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        internal FrameManager(CDPSession client, Page page, bool acceptInsecureCerts, TimeoutSettings timeoutSettings)
+        private string _utilityWorldName;
+
+        public string UtilityWorldName
         {
+            get { return _utilityWorldName; }
+            set { _utilityWorldName = value; }
+        }
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
+        internal FrameManager(CDPSession client, Page page, bool acceptInsecureCerts, TimeoutSettings timeoutSettings)
+#pragma warning restore SA1201 // Elements should appear in the correct order
+        {
+            UtilityWorldName = Guid.NewGuid().ToString();
             Client = client;
             Page = page;
             _logger = Client.Connection.LoggerFactory.CreateLogger<FrameManager>();
